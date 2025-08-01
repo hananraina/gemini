@@ -15,7 +15,7 @@ public class AuthService {
     private final JwtTokenService jwtTokenService;
 
     public AuthResponse authenticate(AuthRequest authRequest) {
-        var token = new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword());
+        var token = new UsernamePasswordAuthenticationToken(authRequest.getIdentifier(), authRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
         String jwtToken = jwtTokenService.generateToken(authentication);
         Long expirationTime = jwtTokenService.extractExpirationTime(jwtToken);
