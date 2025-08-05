@@ -1,26 +1,34 @@
 package com.icebox.gemini.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class JwtTokenService {
+    @Value("${jwt.ttl:900}")
+    private Long ttl;
+
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
 
     public String generateToken(Authentication authentication){
         Instant now = Instant.now();
-        String scope = "ROLE_ADMIN";
+        String scope = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(60 * 60 * 24))
+                .expiresAt(now.plusSeconds(ttl))
                 .subject(authentication.getName())
                 .claim("scope", scope)
                 .build();
