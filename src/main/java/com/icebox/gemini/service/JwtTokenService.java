@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class JwtTokenService {
-    @Value("${jwt.ttl:900}")
-    private Long ttl;
+    @Value("${jwt.accessTtl:900}")
+    private Long accessTtl;
 
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
@@ -28,7 +28,7 @@ public class JwtTokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(ttl))
+                .expiresAt(now.plusSeconds(accessTtl))
                 .subject(authentication.getName())
                 .claim("scope", scope)
                 .build();

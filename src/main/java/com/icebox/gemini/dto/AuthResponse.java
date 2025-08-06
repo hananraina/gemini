@@ -8,7 +8,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class AuthResponse {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private Long expirationTime;
     private String username;
     private String email;

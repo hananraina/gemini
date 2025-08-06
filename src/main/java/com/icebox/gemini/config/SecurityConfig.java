@@ -25,7 +25,7 @@ public class SecurityConfig {
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> {
-                authz.requestMatchers("/api/auth/token").permitAll();
+                authz.requestMatchers("/api/auth/token", "/api/auth/refresh").permitAll();
                 authz.anyRequest().authenticated();
             })
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
