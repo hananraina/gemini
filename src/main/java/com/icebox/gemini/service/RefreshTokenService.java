@@ -61,9 +61,9 @@ public class RefreshTokenService {
     public void deleteAllByUser(User user) {
         tokenRepository.deleteByUser(user);
     }
-
-    public void deleteByUserAndSession(User user, String sessionId) {
-        tokenRepository.deleteByUserAndSessionId(user, sessionId);
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        tokenRepository.deleteByUser_Id(userId);
     }
 
     public void deleteExpiredTokens() {

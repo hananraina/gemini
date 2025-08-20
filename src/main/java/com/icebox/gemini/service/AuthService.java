@@ -32,18 +32,18 @@ public class AuthService {
         Long expirationTime = jwtTokenService.extractExpirationTime(accessToken);
         // Extract principal
         Object principal = authentication.getPrincipal();
-        String email = "";
+        Long id = null;
         List<String> roles = new ArrayList<>();
         String refreshToken = "";
 
         if (principal instanceof SecurityUser securityUser) {
-            email = securityUser.getUser().getEmail();
+            id = securityUser.getUser().getId();
             roles = securityUser.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
             refreshToken = refreshTokenService.generateRefreshToken(securityUser.getUser());
         }
-        return new AuthResponse(accessToken, refreshToken, expirationTime, authentication.getName(), email, roles);
+        return new AuthResponse(accessToken, refreshToken, expirationTime, authentication.getName(), id, roles);
     }
 
     public AuthResponse refresh(String refreshToken, boolean rotateRefreshToken) {
@@ -64,11 +64,11 @@ public class AuthService {
             newRefreshToken = refreshTokenService.generateRefreshToken(securityUser.getUser());
         }
 
-        String email = securityUser.getUser().getEmail();
+        Long id = securityUser.getUser().getId();
         List<String> roles = securityUser.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return new AuthResponse(accessToken, newRefreshToken, expirationTime, authentication.getName(), email, roles);
+        return new AuthResponse(accessToken, newRefreshToken, expirationTime, authentication.getName(), id, roles);
     }
 }

@@ -1,5 +1,6 @@
 package com.icebox.gemini.service;
 
+import com.icebox.gemini.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -25,12 +26,15 @@ public class JwtTokenService {
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        Long userId = securityUser.getUser().getId();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(accessTtl))
                 .subject(authentication.getName())
                 .claim("scope", scope)
+                .claim("id", userId)
                 .build();
         var encoderParams = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
         return this.jwtEncoder.encode(encoderParams).getTokenValue();

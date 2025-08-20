@@ -12,6 +12,6 @@ public class AuthResponse {
     private String refreshToken;
     private Long expirationTime;
     private String username;
-    private String email;
+    private Long id;
     private List<String> roles;
 }
